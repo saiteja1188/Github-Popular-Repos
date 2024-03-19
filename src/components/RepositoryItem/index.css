@@ -1,0 +1,37 @@
+/* Write your CSS here */
+.repos-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8f8ff;
+  border-radius: 20px;
+  padding: 30px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 300px;
+}
+.repos-list-img {
+  width: 100px;
+}
+.repos-list-heading {
+  color: #e73959;
+  font-family: roboto;
+  font-size: 36px;
+}
+.star-container {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+  padding: 0px;
+  height: 20px;
+}
+.star-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  padding: 0px;
+}
+.counts {
+  margin: 0px;
+  padding: 0px;
+}
