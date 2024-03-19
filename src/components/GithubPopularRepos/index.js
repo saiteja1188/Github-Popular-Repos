@@ -1,11 +1,17 @@
 import {Component} from 'react'
-
 import Loader from 'react-loader-spinner'
 
 import LanguageFilterItem from '../LanguageFilterItem'
 import RepositoryItem from '../RepositoryItem'
 
 import './index.css'
+
+const apiStatusConstants = {
+  initial: 'INITIAL',
+  success: 'SUCCESS',
+  failure: 'FAILURE',
+  inProgress: 'IN_PROGRESS',
+}
 
 const languageFiltersData = [
   {id: 'ALL', language: 'All'},
@@ -15,110 +21,106 @@ const languageFiltersData = [
   {id: 'CSS', language: 'CSS'},
 ]
 
-const apiStatusConstants = {
-  initial: 'INITIAL',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-  inProgress: 'IN_PROGRESS',
-}
-
-// Write your code here
 class GithubPopularRepos extends Component {
   state = {
     apiStatus: apiStatusConstants.initial,
     repositoriesData: [],
-    activeIdLanguageId: languageFiltersData[0].id,
+    activeLanguageFilterId: languageFiltersData[0].id,
   }
 
   componentDidMount() {
-    this.getRepository()
+    this.getRepositories()
   }
 
-  getRepository = async () => {
-    const {activeIdLanguageId} = this.state
-    this.setState({apiStatus: apiStatusConstants.inProgress})
-
-    const apiUrl = `https://apis.ccbp.in/popular-repos?language=${activeIdLanguageId}`
-    const options = {
-      method: 'GET',
-    }
-    const response = await fetch(apiUrl, options)
+  getRepositories = async () => {
+    const {activeLanguageFilterId} = this.state
+    this.setState({
+      apiStatus: apiStatusConstants.inProgress,
+    })
+    const apiUrl = `https://apis.ccbp.in/popular-repos?language=${activeLanguageFilterId}`
+    const response = await fetch(apiUrl)
     if (response.ok) {
-      const fetchData = await response.json()
-      const updatedData = fetchData.popular_repos.map(eachRepos => ({
-        id: eachRepos.id,
-        name: eachRepos.name,
-        avatarUrl: eachRepos.avatar_url,
-        forksCount: eachRepos.forks_count,
-        issuesCount: eachRepos.issues_count,
-        starsCount: eachRepos.stars_count,
+      const fetchedData = await response.json()
+      const updatedData = fetchedData.popular_repos.map(eachRepository => ({
+        id: eachRepository.id,
+        imageUrl: eachRepository.avatar_url,
+        name: eachRepository.name,
+        starsCount: eachRepository.stars_count,
+        forksCount: eachRepository.forks_count,
+        issuesCount: eachRepository.issues_count,
       }))
       this.setState({
         repositoriesData: updatedData,
         apiStatus: apiStatusConstants.success,
       })
     } else {
-      this.setState({apiStatus: apiStatusConstants.failure})
+      this.setState({
+        apiStatus: apiStatusConstants.failure,
+      })
     }
   }
 
-  renderRepositoryLoading = () => (
-    <div>
-      <Loader type="ThreeDots" hight={80} width={80} color="#0284c7" />
+  renderLoadingView = () => (
+    <div data-testid="loader">
+      <Loader color="#0284c7" height={80} type="ThreeDots" width={80} />
     </div>
   )
 
-  renderRepositoryFailureView = () => (
-    <div>
+  renderFailureView = () => (
+    <div className="failure-view-container">
       <img
         src="https://assets.ccbp.in/frontend/react-js/api-failure-view.png"
         alt="failure view"
-        className="failure-img"
+        className="failure-view-image"
       />
-      <h1>Something Went Wrong</h1>
+      <h1 className="error-message">Something Went Wrong</h1>
     </div>
   )
 
-  renderRepositorySuccessView = () => {
+  renderRepositoriesListView = () => {
     const {repositoriesData} = this.state
 
     return (
-      <ul className="repository-List-container">
-        {repositoriesData.map(repository => (
-          <RepositoryItem repositoryDetails={repository} key={repository.id} />
+      <ul className="repositories-list">
+        {repositoriesData.map(eachRepository => (
+          <RepositoryItem
+            key={eachRepository.id}
+            repositoryDetails={eachRepository}
+          />
         ))}
       </ul>
     )
   }
 
-  renderRepositoryList = () => {
+  renderRepositories = () => {
     const {apiStatus} = this.state
+
     switch (apiStatus) {
       case apiStatusConstants.success:
-        return this.renderRepositorySuccessView()
+        return this.renderRepositoriesListView()
       case apiStatusConstants.failure:
-        return this.renderRepositoryFailureView()
+        return this.renderFailureView()
       case apiStatusConstants.inProgress:
-        return this.renderRepositoryLoading()
+        return this.renderLoadingView()
       default:
         return null
     }
   }
 
-  setActiveLanguageFilterId = id => {
-    this.setState({activeIdLanguageId: id}, this.getRepository)
+  setActiveLanguageFilterId = newFilterId => {
+    this.setState({activeLanguageFilterId: newFilterId}, this.getRepositories)
   }
 
-  renderLanguageFilterList = () => {
-    const {activeIdLanguageId} = this.state
+  renderLanguageFiltersList = () => {
+    const {activeLanguageFilterId} = this.state
 
     return (
-      <ul className="language-menu">
-        {languageFiltersData.map(eachLanguage => (
+      <ul className="filters-list">
+        {languageFiltersData.map(eachLanguageFilter => (
           <LanguageFilterItem
-            LanguageFilterDetails={eachLanguage}
-            key={eachLanguage.id}
-            isActiveId={eachLanguage.id === activeIdLanguageId}
+            key={eachLanguageFilter.id}
+            isActive={eachLanguageFilter.id === activeLanguageFilterId}
+            languageFilterDetails={eachLanguageFilter}
             setActiveLanguageFilterId={this.setActiveLanguageFilterId}
           />
         ))}
@@ -128,11 +130,11 @@ class GithubPopularRepos extends Component {
 
   render() {
     return (
-      <div className="github-container">
-        <div className="github-content">
-          <h1 className="github-heading">Popular</h1>
-          {this.renderLanguageFilterList()}
-          {this.renderRepositoryList()}
+      <div className="app-container">
+        <div className="responsive-container">
+          <h1 className="heading">Popular</h1>
+          {this.renderLanguageFiltersList()}
+          {this.renderRepositories()}
         </div>
       </div>
     )

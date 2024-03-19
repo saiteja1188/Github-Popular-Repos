@@ -1,21 +1,22 @@
-/* Write your CSS here */
-.language-list-container {
-  list-style-type: none;
-  margin-right: 20px;
-}
 .language-btn {
-  border: none;
+  color: #0f172a;
   background-color: transparent;
-  color: #1e293b;
-  font-family: roboto;
-  font-size: 18px;
-  font-weight: 500;
-  padding: 5px 20px;
-  outline: none;
+  font-family: 'Roboto';
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  margin-right: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex-shrink: 0;
   cursor: pointer;
+  outline: none;
 }
+
 .active-language-btn {
-  border: 1px solid #0284c7;
   color: #0284c7;
   border-radius: 24px;
+  border: 1px solid #0284c7;
 }

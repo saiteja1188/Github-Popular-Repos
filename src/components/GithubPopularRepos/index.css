@@ -1,33 +1,67 @@
-/* Write your CSS here */
-.github-container {
+.app-container {
   display: flex;
   justify-content: center;
-  height: 100vh;
+  background-color: #ffffff;
+  min-height: 100vh;
 }
-.github-content {
+
+.responsive-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 90%;
+  width: 80%;
 }
-.github-heading {
+
+.heading {
   color: #0f172a;
-  font-family: lobster;
+  font-family: 'Lobster';
   font-size: 48px;
-  font-weight: 500;
+  margin-bottom: 48px;
 }
-.language-menu {
+
+.filters-list {
   display: flex;
   flex-wrap: wrap;
+  list-style-type: none;
   padding: 0px;
 }
-.repository-List-container {
-  list-style-type: none;
+
+.repositories-list {
   display: flex;
   flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0px;
+  max-width: 1140px;
 }
-.failure-img {
-  margin-top: 50px;
-  width: 300px;
+
+.failure-view-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.failure-view-image {
+  width: 250px;
+  height: 180px;
+}
+
+@media screen and (min-width: 768px) {
+  .error-view-image {
+    width: 527px;
+    height: 393px;
+  }
+}
+
+.error-message {
   text-align: center;
+  color: #334155;
+  font-family: 'Bree Serif';
+  font-size: 28px;
+}
+
+@media screen and (min-width: 768px) {
+  .error-message {
+    font-size: 48px;
+  }
 }
